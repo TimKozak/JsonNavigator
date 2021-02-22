@@ -10,26 +10,35 @@ def twitter_api():
     """
     Get json from twitter
     """
+    while True:
+        try:
+            your_token = input("Paste your token: ")
 
-    tweet_tag = input("Enter twitter tag: @")
-    base_url = "https://api.twitter.com/"
+            tweet_tag = input("Enter twitter tag: @")
+            base_url = "https://api.twitter.com/"
 
-    bearer_token = "AAAAAAAAAAAAAAAAAAAAAIKvMwEAAAAAGfXtAizYuenmkYuQLZ4qCDL%2F3n8%3D0Bqy4HA6TVWqzcYq7Nk9UK0slRiRyVZvlEBtpyowkdXOupLBNf"
+            bearer_token = your_token
 
-    search_url = '{}1.1/friends/list.json'.format(base_url)
+            search_url = '{}1.1/friends/list.json'.format(base_url)
 
-    search_headers = {
-        'Authorization': 'Bearer {}'.format(bearer_token)
-    }
+            search_headers = {
+                'Authorization': 'Bearer {}'.format(bearer_token)
+            }
 
-    search_params = {
-        'screen_name': f'@{tweet_tag}',
-        'count': 15
-    }
+            search_params = {
+                'screen_name': f'@{tweet_tag}',
+                'count': 15
+            }
 
-    response = requests.get(
-        search_url, headers=search_headers, params=search_params)
-    return response.json()['users']
+            response = requests.get(
+                search_url, headers=search_headers, params=search_params)
+            return response.json()['users']
+
+        except Exception:
+            print("Invalid token or tag")
+            endpoint = input("Do you want to end? (y/n) ")
+            if endpoint == "y":
+                return "Thanks for using the app"
 
 
 def find_by_keys(twitter_dict: str):
@@ -38,6 +47,10 @@ def find_by_keys(twitter_dict: str):
 
     """
     twitter = twitter_dict
+    print("---"*10)
+    pprint(twitter_dict)
+    print("---"*10)
+
     while True:
 
         if isinstance(twitter, dict):
@@ -66,7 +79,7 @@ def find_by_keys(twitter_dict: str):
                 print("Invalid key")
                 endpoint = input("Do you want to end? (y/n) ")
                 if endpoint == "y":
-                    break
+                    return "Thanks for using the app"
 
         elif isinstance(twitter, list):
             try:
@@ -95,8 +108,10 @@ def find_by_keys(twitter_dict: str):
                 print("Invalid index")
                 endpoint = input("Do you want to end? (y/n) ")
                 if endpoint == "y":
-                    break
+                    return "Thanks for using the app"
 
 
 if __name__ == "__main__":
-    find_by_keys(twitter_api())
+    my_json = twitter_api()
+    if my_json != "Thanks for using the app":
+        find_by_keys(my_json)
